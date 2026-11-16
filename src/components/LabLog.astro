@@ -1,0 +1,46 @@
+---
+// 构想与实验的记录表：日期、记录、状态、下一步。手机上每条记录竖着排。
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../lib/content';
+import Status from './Status.astro';
+
+interface Props {
+  entries: CollectionEntry<'lab'>[];
+}
+
+const { entries } = Astro.props;
+---
+
+{
+  entries.length > 0 ? (
+    <div class="log">
+      <div class="log-head th" aria-hidden="true">
+        <span>日期</span>
+        <span>记录</span>
+        <span>状态</span>
+        <span>下一步</span>
+      </div>
+      <div class="log-body">
+        {entries.map((entry) => (
+          <article class="log-row">
+            <span class="log-date">{formatDate(entry.data.date)}</span>
+            <div class="log-rec">
+              <a class="log-title" href={`/lab/${entry.id}/`}>
+                {entry.data.title}
+              </a>
+              {entry.data.draft && <span class="draft">草稿</span>}
+              <p>{entry.data.summary}</p>
+            </div>
+            <span class="log-st">
+              <Status status={entry.data.status} />
+            </span>
+            {/* 标签之间不能有空格，否则手机上空的“下一步”藏不掉 */}
+            <p class="log-next">{entry.data.next ?? ''}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <p class="empty">第一条记录还在整理中。</p>
+  )
+}

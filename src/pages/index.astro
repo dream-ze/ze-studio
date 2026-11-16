@@ -1,0 +1,187 @@
+---
+import Base from '../layouts/Base.astro';
+import LineageGraph from '../components/LineageGraph.astro';
+import PostList from '../components/PostList.astro';
+import LabLog from '../components/LabLog.astro';
+import ProjectFeature from '../components/ProjectFeature.astro';
+import ProjectRows from '../components/ProjectRows.astro';
+import ServiceCols from '../components/ServiceCols.astro';
+import { getLab, getProjects, getResearch } from '../lib/content';
+
+// 首页每个栏目只放最新的几条，完整列表在各自的页面
+const research = (await getResearch()).slice(0, 3);
+const lab = (await getLab()).slice(0, 4);
+const projects = await getProjects();
+const featured = projects.find((project) => project.data.featured) ?? projects[0];
+const others = projects.filter((project) => project !== featured);
+---
+
+<Base>
+  <section class="wrap hero">
+    <h1 class="serif">把想法做出来，<br />把过程讲清楚。</h1>
+    <div class="hero-side">
+      <p>
+        我是 ZE，数据工程师，正在往 AI Agent 和独立产品的方向走。ZE STUDIO 记录我怎么看 AI
+        和技术，想做什么，做出来了什么。
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="#research">看看我的想法</a>
+        <a class="lk" href="#services">聊聊合作</a>
+      </div>
+    </div>
+  </section>
+
+  <LineageGraph />
+
+  <div class="wrap sections">
+    <div class="spine">
+      <section class="sec" id="research">
+        <div class="sec-h">
+          <h2>观点</h2>
+          <p>我怎么看 AI 和技术。每篇都有一个明确的结论。</p>
+          <a class="lk" href="/research/">全部观点</a>
+        </div>
+        <div class="sec-b">
+          <PostList posts={research} />
+          <a class="lk sec-more" href="/research/">全部观点</a>
+        </div>
+      </section>
+
+      <section class="sec" id="lab">
+        <div class="sec-h">
+          <h2>构想<br />与实验</h2>
+          <p>还没做完的想法，和已经跑过的实验。每条构想都写着下一步。</p>
+          <a class="lk" href="/lab/">全部记录</a>
+        </div>
+        <div class="sec-b">
+          <LabLog entries={lab} />
+          <a class="lk sec-more" href="/lab/">全部记录</a>
+        </div>
+      </section>
+
+      {
+        featured && (
+          <section class="sec" id="projects">
+            <div class="sec-h">
+              <h2>项目</h2>
+              <p>做出来的东西，和它现在的真实状态。</p>
+              <a class="lk" href="/projects/">全部项目</a>
+            </div>
+            <div class="sec-b">
+              <ProjectFeature project={featured} />
+              <div class="others">
+                <ProjectRows projects={others} />
+              </div>
+              <a class="lk sec-more" href="/projects/">全部项目</a>
+            </div>
+          </section>
+        )
+      }
+
+      <section class="sec" id="services">
+        <div class="sec-h">
+          <h2>合作</h2>
+          <p>可以一起做什么。只列有真实项目或工作经验支撑的方向。</p>
+          <a class="lk" href="/services/">了解详情</a>
+        </div>
+        <div class="sec-b">
+          <ServiceCols />
+          <a class="lk sec-more" href="/services/">了解详情</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px 64px;
+    padding-top: 56px;
+    padding-bottom: 52px;
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 6vw, 76px);
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .hero-side {
+    flex: 0 1 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-bottom: 10px;
+  }
+
+  .hero-side p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--sub);
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .sections {
+    margin-top: 72px;
+  }
+
+  /* 主项目下面的其他项目：接着主项目的分隔线往下排 */
+  .others :global(.proj-row:first-child) {
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 1040px) {
+    .hero {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 18px;
+      padding-top: 28px;
+      padding-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 11.2vw, 64px);
+      line-height: 1.25;
+    }
+
+    .hero-side {
+      flex: none;
+      gap: 18px;
+      padding-bottom: 0;
+    }
+
+    .hero-side p {
+      max-width: 560px;
+      font-size: 16.5px;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .hero-actions .lk {
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .sections {
+      margin-top: 48px;
+    }
+  }
+</style>

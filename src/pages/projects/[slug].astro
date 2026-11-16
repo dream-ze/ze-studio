@@ -1,0 +1,122 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectLineage from '../../components/ProjectLineage.astro';
+import Status from '../../components/Status.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<Base title={data.title} description={data.why}>
+  <div class="wrap detail">
+    <article class="spine">
+      <header class="d-head">
+        <div class="d-meta">
+          <a class="lk" href="/projects/">项目</a>
+          <br />
+          <span>{data.type}</span>
+          {
+            data.started && (
+              <>
+                <br />
+                <span>{data.started} 开始</span>
+              </>
+            )
+          }
+        </div>
+        <div>
+          <div class="d-title">
+            <h1>
+              {data.title}
+              {data.draft && <span class="draft">草稿</span>}
+            </h1>
+            <Status status={data.status} />
+          </div>
+          <p class="d-why">{data.why}</p>
+        </div>
+      </header>
+
+      <ProjectLineage id={project.id} />
+
+      <dl class="p-facts">
+        {
+          data.tech.length > 0 && (
+            <div>
+              <dt>技术</dt>
+              <dd class="mono">{data.tech.join(' · ')}</dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>进度</dt>
+          <dd>{data.progress}</dd>
+        </div>
+        {
+          (data.demo || data.repo) && (
+            <div>
+              <dt>链接</dt>
+              <dd class="links">
+                {data.demo && (
+                  <a class="lk" href={data.demo} rel="noopener">
+                    在线演示
+                  </a>
+                )}
+                {data.repo && (
+                  <a class="lk" href={data.repo} rel="noopener">
+                    源代码
+                  </a>
+                )}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+
+      {data.cover && <img class="shot" src={data.cover} alt={`${data.title} 截图`} loading="lazy" decoding="async" />}
+
+      <div class="ledger is-strong">
+        <Content />
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  /* 和正文右栏对齐：左边空出窄栏的宽度 */
+  .p-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 40px;
+    margin: 0;
+    padding: 28px 0 36px calc(var(--rail) + 40px);
+  }
+
+  .p-facts dt {
+    font-size: 12.5px;
+    color: var(--sub);
+  }
+
+  .p-facts dd {
+    margin: 0;
+    font-size: 15.5px;
+  }
+
+  .links {
+    display: flex;
+    gap: 20px;
+  }
+
+  @media (max-width: 860px) {
+    .p-facts {
+      padding: 22px 0 28px;
+    }
+  }
+</style>

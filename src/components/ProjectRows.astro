@@ -1,0 +1,26 @@
+---
+// 其他项目：每个占一行。
+import type { CollectionEntry } from 'astro:content';
+import Status from './Status.astro';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<div>
+  {
+    projects.map((project) => (
+      <article class="proj-row">
+        <a class="proj-name" href={`/projects/${project.id}/`}>
+          {project.data.title}
+          {project.data.draft && <span class="draft">草稿</span>}
+        </a>
+        <span class="proj-why">{project.data.why}</span>
+        <Status status={project.data.status} />
+      </article>
+    ))
+  }
+</div>

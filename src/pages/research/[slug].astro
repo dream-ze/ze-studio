@@ -1,0 +1,75 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatDate, getResearch } from '../../lib/content';
+import { getNeighbors } from '../../lib/graph';
+
+export async function getStaticPaths() {
+  const posts = await getResearch();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { downstream } = await getNeighbors(`research/${post.id}`);
+---
+
+<Base title={post.data.title} description={post.data.summary}>
+  <div class="wrap detail">
+    <article class="spine">
+      <header class="d-head">
+        <div class="d-meta">
+          <a class="lk" href="/research/">观点</a>
+          <br />
+          <span>{formatDate(post.data.date)}</span>
+          <br />
+          <span>{post.data.topic}</span>
+          {
+            post.data.updated && (
+              <>
+                <br />
+                <span>更新于 {formatDate(post.data.updated)}</span>
+              </>
+            )
+          }
+        </div>
+        <h1>
+          {post.data.title}
+          {post.data.draft && <span class="draft">草稿</span>}
+        </h1>
+      </header>
+
+      <div class="lrow is-strong">
+        <div class="lrow-label">结论</div>
+        <p class="lead">{post.data.summary}</p>
+      </div>
+
+      <div class="ledger">
+        <Content />
+      </div>
+
+      {
+        downstream.length > 0 && (
+          <div class="lrow is-strong tail">
+            <div class="lrow-label">这篇文章通向</div>
+            <div class="goes">
+              {downstream.map((n) => (
+                <a href={n.href}>
+                  <span class="th">{n.kind}</span>
+                  {n.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </article>
+  </div>
+</Base>
+
+<style>
+  .tail {
+    margin-top: 36px;
+    padding-bottom: 0;
+  }
+</style>

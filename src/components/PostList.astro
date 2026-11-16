@@ -1,0 +1,36 @@
+---
+// 观点列表：日期和主题在左，大标题和摘要在右。
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../lib/content';
+
+interface Props {
+  posts: CollectionEntry<'research'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 ? (
+    <div>
+      {posts.map((post) => (
+        <article class="post">
+          <div class="post-meta">
+            <span>{formatDate(post.data.date)}</span>
+            <br />
+            <span>{post.data.topic}</span>
+          </div>
+          <div>
+            <h3>
+              <a href={`/research/${post.id}/`}>{post.data.title}</a>
+              {post.data.draft && <span class="draft">草稿</span>}
+            </h3>
+            <p>{post.data.summary}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <p class="empty">第一篇文章正在写。</p>
+  )
+}

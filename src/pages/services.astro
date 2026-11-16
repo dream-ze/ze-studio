@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import ServiceCols from '../components/ServiceCols.astro';
+import { TOPICS } from '../data/services';
+---
+
+<Base title="Services" description="可以一起做的事：项目合作和技术交流。">
+  <div class="wrap">
+    <div class="spine">
+      <section class="sec is-head">
+        <div class="sec-h">
+          <h1>合作</h1>
+          <p>可以一起做什么。只列有真实项目或工作经验支撑的方向。</p>
+        </div>
+        <div class="sec-b">
+          <p class="big intro">如果你有相关的项目或想法，欢迎找我聊。下面是我有把握的方向，和我愿意交流的话题。</p>
+          <ServiceCols />
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="sec-h">
+          <h2>技术交流</h2>
+          <p>这些方向我正在实践，还没有成熟的交付案例，但很愿意交流。</p>
+        </div>
+        <div class="sec-b">
+          {
+            TOPICS.map((topic) => (
+              <div class="kv">
+                <span class="kv-name">{topic.title}</span>
+                <span class="kv-desc">{topic.desc}</span>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="sec-h">
+          <h2>怎么开始</h2>
+        </div>
+        <div class="sec-b">
+          <p class="big">发邮件聊聊。说说你想做什么，现在是怎么做的。</p>
+          <p class="start"><a class="btn" href="#contact">联系方式</a></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .intro {
+    margin-bottom: 36px;
+  }
+
+  .start {
+    margin-top: 24px;
+  }
+</style>

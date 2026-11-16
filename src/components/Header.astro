@@ -1,0 +1,143 @@
+---
+import { NAV, SITE } from '../consts';
+
+const path = Astro.url.pathname;
+const current = (href: string) => (path.startsWith(href) ? 'page' : undefined);
+---
+
+<header class="wrap">
+  <div class="bar">
+    <a class="logo" href="/">{SITE.name}</a>
+
+    <nav class="links" aria-label="主导航">
+      {NAV.map((item) => <a href={item.href} aria-current={current(item.href)}>{item.label}</a>)}
+      <a class="lk contact" href="#contact">联系我</a>
+    </nav>
+
+    <details class="menu">
+      <summary>菜单</summary>
+      <nav aria-label="主导航">
+        {NAV.map((item) => <a href={item.href} aria-current={current(item.href)}>{item.label}</a>)}
+        <a href="#contact">联系我</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 72px;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 15px;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+  }
+
+  .links a[aria-current='page'] {
+    color: var(--cobalt);
+  }
+
+  .links .contact {
+    margin-left: 14px;
+    padding: 0;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .menu summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu[open] summary {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .menu nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .menu nav a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    font-size: 17px;
+    border-top: 1px solid var(--line);
+  }
+
+  .menu nav a:first-child {
+    border-top: 0;
+  }
+
+  .menu nav a[aria-current='page'] {
+    color: var(--cobalt);
+  }
+
+  @media (max-width: 860px) {
+    .bar {
+      min-height: 56px;
+    }
+
+    .logo {
+      font-size: 14px;
+    }
+
+    .links {
+      display: none;
+    }
+
+    .menu {
+      display: block;
+    }
+  }
+</style>

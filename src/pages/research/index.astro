@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getResearch } from '../../lib/content';
+
+const posts = await getResearch();
+---
+
+<Base title="Research" description="关于 AI、技术架构和软件工程的观点与思考。">
+  <div class="wrap">
+    <div class="spine">
+      <section class="sec is-head">
+        <div class="sec-h">
+          <h1>观点</h1>
+          <p>我怎么看 AI、技术架构和软件工程。每个观点都挂在一件做过的事或一份数据上。</p>
+        </div>
+        <div class="sec-b">
+          <PostList posts={posts} />
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>

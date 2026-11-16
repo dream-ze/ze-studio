@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import LabLog from '../../components/LabLog.astro';
+import { getLab } from '../../lib/content';
+
+const entries = await getLab();
+---
+
+<Base title="Lab" description="产品构想和实验记录。允许没有结论，也允许失败。">
+  <div class="wrap">
+    <div class="spine">
+      <section class="sec is-head">
+        <div class="sec-h">
+          <h1>构想<br />与实验</h1>
+          <p>产品构想和实验记录。允许没有结论，也允许失败；放弃的也留在这里。</p>
+        </div>
+        <div class="sec-b">
+          <LabLog entries={entries} />
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>

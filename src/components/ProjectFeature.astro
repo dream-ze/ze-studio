@@ -1,0 +1,73 @@
+---
+// 主项目的大块：名称、为什么做、进度，以及它的上游和下游。
+import type { CollectionEntry } from 'astro:content';
+import { getNeighbors } from '../lib/graph';
+import Status from './Status.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { upstream, downstream } = await getNeighbors(`projects/${project.id}`);
+const posts = upstream.filter((n) => n.col === 0).length;
+const records = upstream.filter((n) => n.col === 1).length;
+---
+
+<article class="feature">
+  <div class="feature-top">
+    <h3>
+      <a href={`/projects/${project.id}/`}>{data.title}</a>
+      {data.draft && <span class="draft">草稿</span>}
+    </h3>
+    <Status status={data.status} />
+  </div>
+  <p class="feature-why">{data.why}</p>
+  <dl class="facts">
+    {
+      data.started && (
+        <div>
+          <dt>开始</dt>
+          <dd class="mono">{data.started}</dd>
+        </div>
+      )
+    }
+    {
+      data.tech.length > 0 && (
+        <div>
+          <dt>技术</dt>
+          <dd class="mono">{data.tech.join(' · ')}</dd>
+        </div>
+      )
+    }
+    <div class="wide">
+      <dt>进度</dt>
+      <dd>{data.progress}</dd>
+    </div>
+    {
+      posts > 0 && (
+        <div>
+          <dt>上游观点</dt>
+          <dd class="mono">{posts} 篇</dd>
+        </div>
+      )
+    }
+    {
+      records > 0 && (
+        <div>
+          <dt>上游 Lab 记录</dt>
+          <dd class="mono">{records} 条</dd>
+        </div>
+      )
+    }
+    {
+      downstream.length > 0 && (
+        <div class="wide">
+          <dt>支撑的合作方向</dt>
+          <dd>{downstream.map((n) => n.title).join('、')}</dd>
+        </div>
+      )
+    }
+  </dl>
+</article>

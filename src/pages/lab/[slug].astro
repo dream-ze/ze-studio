@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Status from '../../components/Status.astro';
+import { formatDate, getLab } from '../../lib/content';
+import { getNeighbors } from '../../lib/graph';
+
+export async function getStaticPaths() {
+  const entries = await getLab();
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { upstream, downstream } = await getNeighbors(`lab/${entry.id}`);
+---
+
+<Base title={entry.data.title} description={entry.data.summary}>
+  <div class="wrap detail">
+    <article class="spine">
+      <header class="d-head">
+        <div class="d-meta">
+          <a class="lk" href="/lab/">构想与实验</a>
+          <br />
+          <span>{formatDate(entry.data.date)}</span>
+        </div>
+        <div>
+          <div class="d-title">
+            <h1>
+              {entry.data.title}
+              {entry.data.draft && <span class="draft">草稿</span>}
+            </h1>
+            <Status status={entry.data.status} />
+          </div>
+        </div>
+      </header>
+
+      <div class="lrow is-strong">
+        <div class="lrow-label">一句话</div>
+        <p class="lead">{entry.data.summary}</p>
+      </div>
+
+      {
+        entry.data.next && (
+          <div class="lrow">
+            <div class="lrow-label">下一步</div>
+            <p class="lead">{entry.data.next}</p>
+          </div>
+        )
+      }
+
+      <div class="ledger">
+        <Content />
+      </div>
+
+      {
+        upstream.length > 0 && (
+          <div class="lrow is-strong tail">
+            <div class="lrow-label">它来自</div>
+            <div class="goes">
+              {upstream.map((n) => (
+                <a href={n.href}>
+                  <span class="th">{n.kind}</span>
+                  {n.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+      {
+        downstream.length > 0 && (
+          <div class:list={['lrow tail', { 'is-strong': upstream.length === 0 }]}>
+            <div class="lrow-label">这条记录通向</div>
+            <div class="goes">
+              {downstream.map((n) => (
+                <a href={n.href}>
+                  <span class="th">{n.kind}</span>
+                  {n.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </article>
+  </div>
+</Base>
+
+<style>
+  .tail {
+    padding-bottom: 0;
+  }
+
+  .ledger + .tail {
+    margin-top: 36px;
+  }
+
+  .tail + .tail {
+    margin-top: 36px;
+  }
+</style>

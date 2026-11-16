@@ -1,0 +1,32 @@
+---
+// 合作方向：三栏文字，每栏写清楚依据。
+import { SERVICES } from '../data/services';
+---
+
+<div class="cols3">
+  {
+    SERVICES.map((s) => (
+      <div class="col">
+        <h3>{s.title}</h3>
+        <ul>
+          {s.points.map((p) => (
+            <li>{p}</li>
+          ))}
+        </ul>
+        {s.basis && (
+          <p class="basis">
+            依据：
+            {s.basedOn ? (
+              <a class="lk" style="font-weight: 400" href={`/${s.basedOn}/`}>
+                {s.basis}
+              </a>
+            ) : (
+              s.basis
+            )}
+          </p>
+        )}
+        {s.note && <p class="basis sub">{s.note}</p>}
+      </div>
+    ))
+  }
+</div>

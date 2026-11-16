@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectFeature from '../../components/ProjectFeature.astro';
+import ProjectRows from '../../components/ProjectRows.astro';
+import { getProjects } from '../../lib/content';
+
+const projects = await getProjects();
+const featured = projects.find((project) => project.data.featured) ?? projects[0];
+const others = projects.filter((project) => project !== featured);
+---
+
+<Base title="Projects" description="已经做出来的和正在做的项目，每个都写清楚为什么做、怎么设计。">
+  <div class="wrap">
+    <div class="spine">
+      <section class="sec is-head">
+        <div class="sec-h">
+          <h1>项目</h1>
+          <p>每个项目都写清楚：为什么做、怎么设计、遇到了什么、现在是什么状态。</p>
+        </div>
+        <div class="sec-b">
+          {
+            featured ? (
+              <>
+                <ProjectFeature project={featured} />
+                <div class="others">
+                  <ProjectRows projects={others} />
+                </div>
+              </>
+            ) : (
+              <p class="empty">第一个项目还在整理中。</p>
+            )
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .others :global(.proj-row:first-child) {
+    border-top: 1px solid var(--line);
+  }
+</style>
