@@ -1,0 +1,12 @@
+{
+  // Cloudflare 的发布配置：把 npm run build 生成的 dist 文件夹作为静态网站发布。
+  "name": "ze-studio",
+  "compatibility_date": "2026-11-16",
+  "assets": {
+    "directory": "./dist",
+    // 打开不存在的网址时显示站里的 404 页面
+    "not_found_handling": "404-page"
+  },
+  // 不向 Cloudflare 发送使用统计
+  "send_metrics": false
+}
