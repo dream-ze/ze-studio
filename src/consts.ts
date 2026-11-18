@@ -16,5 +16,5 @@ export const NAV = [
 // email 用个人邮箱，不要用公司邮箱；github 只填账号名。
 export const CONTACT = {
   email: 'yangchangze44@gmail.com',
-  github: '',
+  github: 'dream-ze',
 };
