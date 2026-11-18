@@ -15,6 +15,6 @@ export const NAV = [
 // 联系方式：填好后页面上的“待补充”会自动换成真实链接。
 // email 用个人邮箱，不要用公司邮箱；github 只填账号名。
 export const CONTACT = {
-  email: '',
+  email: 'yangchangze44@gmail.com',
   github: '',
 };
