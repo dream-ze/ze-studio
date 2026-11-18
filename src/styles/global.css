@@ -313,7 +313,7 @@ img {
 .log-head,
 .log-row {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) 84px minmax(0, 270px);
+  grid-template-columns: 104px minmax(0, 1.6fr) 84px minmax(0, 1fr);
   gap: 20px;
 }
 
@@ -767,9 +767,9 @@ img {
 
 /* ---------- 窄屏：平板和手机 ---------- */
 
-@media (max-width: 860px) {
+@media (max-width: 1040px) {
   :root {
-    --gutter: 16px;
+    --gutter: clamp(16px, 4vw, 40px);
   }
 
   .spine {
@@ -1047,7 +1047,7 @@ img {
   }
 }
 
-@media (min-width: 861px) {
+@media (min-width: 1041px) {
   .sec-more {
     display: none;
   }
